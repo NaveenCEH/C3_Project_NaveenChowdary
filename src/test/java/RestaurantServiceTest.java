@@ -11,7 +11,7 @@ class RestaurantServiceTest {
     Restaurant restaurant;
     //REFACTOR ALL THE REPEATED LINES OF CODE
 
-
+    OrderValue orderValue = new OrderValue();
     //>>>>>>>>>>>>>>>>>>>>>>SEARCHING<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     @Test
     public void searching_for_existing_restaurant_should_return_expected_restaurant_object() throws restaurantNotFoundException {
@@ -25,39 +25,35 @@ class RestaurantServiceTest {
     }
     //<<<<<<<<<<<<<<<<<<<<SEARCHING>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+    public void calculate_final_order_value_pass() {
+        addFoodItemsToCart();
 
-
-
-    //>>>>>>>>>>>>>>>>>>>>>>ADMIN: ADDING & REMOVING RESTAURANTS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    @Test
-    public void remove_restaurant_should_reduce_list_of_restaurants_size_by_1() throws restaurantNotFoundException {
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant = service.addRestaurant("Amelie's cafe","Chennai",openingTime,closingTime);
-        
-        int initialNumberOfRestaurants = service.getRestaurants().size();
-        service.removeRestaurant("Amelie's cafe");
-        assertEquals(initialNumberOfRestaurants-1, service.getRestaurants().size());
+        assertEquals(1215, orderValue.totalOrderValue());
     }
 
     @Test
-    public void removing_restaurant_that_does_not_exist_should_throw_exception() throws restaurantNotFoundException {
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant = service.addRestaurant("Amelie's cafe","Chennai",openingTime,closingTime);
-        
-        assertThrows(restaurantNotFoundException.class,()->service.removeRestaurant("Pantry d'or"));
+    public void calculate_final_order_value_fail() {
+        addFoodItemsToCart();
+
+        assertNotEquals(100, orderValue.totalOrderValue());
     }
 
-    @Test
-    public void add_restaurant_should_increase_list_of_restaurants_size_by_1(){
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant = service.addRestaurant("Amelie's cafe","Chennai",openingTime,closingTime);
-        
-        int initialNumberOfRestaurants = service.getRestaurants().size();
-        service.addRestaurant("Pumpkin Tales","Chennai",LocalTime.parse("12:00:00"),LocalTime.parse("23:00:00"));
-        assertEquals(initialNumberOfRestaurants + 1,service.getRestaurants().size());
+    private void addFoodItemsToCart() {
+        Item chapathi = new Item("chapathi", 25, true);
+        orderValue.addFoodItemsToCart(chapathi, 10);
+
+        Item meals = new Item("meals", 110, true);
+        orderValue.addFoodItemsToCart(meals, 1);
+
+        Item ChickenBiryani = new Item("chickenBiryani", 250, true);
+        orderValue.addFoodItemsToCart(ChickenBiryani, 1);
+
+        Item KajuCurry = new Item("KajuCurry", 180, true);
+        orderValue.addFoodItemsToCart(KajuCurry, 1);
+
+        Item gulabJamun = new Item("Gulab Jamun", 25, true);
+        orderValue.addFoodItemsToCart(gulabJamun, 5);
     }
-    //<<<<<<<<<<<<<<<<<<<<ADMIN: ADDING & REMOVING RESTAURANTS>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
 }
